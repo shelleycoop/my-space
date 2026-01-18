@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Blog & Notes</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header>
+    <h1>My Blog & Notes</h1>
+    <p>Write. Save. Publish.</p>
+  </header>
+
+  <main>
+    <section class="editor">
+      <input type="text" id="title" placeholder="Post title..." />
+      <textarea id="content" placeholder="Write your blog or notes here..."></textarea>
+      <button onclick="savePost()">Save Post</button>
+    </section>
+
+    <section class="posts">
+      <h2>Saved Posts</h2>
+      <ul id="postList"></ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 | Built with HTML, CSS & JS</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

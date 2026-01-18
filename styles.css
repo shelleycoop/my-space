@@ -1,0 +1,99 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f4f6f8;
+  color: #333;
+}
+
+header {
+  background: #1f2933;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+main {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.editor {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.editor input,
+.editor textarea {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.editor textarea {
+  min-height: 200px;
+  resize: vertical;
+}
+
+.editor button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.editor button:hover {
+  background: #1e40af;
+}
+
+.posts {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.posts ul {
+  list-style: none;
+  padding: 0;
+}
+
+.posts li {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.posts li:last-child {
+  border-bottom: none;
+}
+
+.posts h3 {
+  margin: 0 0 5px;
+}
+
+.post-actions button {
+  margin-right: 10px;
+  border: none;
+  background: none;
+  color: #2563eb;
+  cursor: pointer;
+}
+
+.post-actions button:hover {
+  text-decoration: underline;
+}
+
+footer {
+  text-align: center;
+  padding: 15px;
+  background: #e5e7eb;
+}
