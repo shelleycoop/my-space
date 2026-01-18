@@ -97,3 +97,36 @@ footer {
   padding: 15px;
   background: #e5e7eb;
 }
+
+.auth {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  margin: 40px auto;
+}
+
+.auth input {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 12px;
+}
+
+.auth button {
+  width: 48%;
+  padding: 10px;
+  margin-right: 2%;
+  background: #2563eb;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.logout {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
