@@ -7,8 +7,10 @@ const passwordInput = document.getElementById("password");
 const titleInput = document.getElementById("title");
 const contentInput = document.getElementById("content");
 const postList = document.getElementById("postList");
+const editingIdInput = document.getElementById("editingId");
+const cancelBtn = document.getElementById("cancelBtn");
 
-/* ---------- STORAGE HELPERS ---------- */
+/* ---------- STORAGE ---------- */
 
 function getUsers() {
   return JSON.parse(localStorage.getItem("users")) || {};
@@ -25,7 +27,7 @@ function register() {
   const password = passwordInput.value.trim();
 
   if (!email || !password) {
-    alert("Email and password are required");
+    alert("Email and password required");
     return;
   }
 
@@ -36,32 +38,22 @@ function register() {
     return;
   }
 
-  users[email] = {
-    password: password,
-    posts: []
-  };
-
+  users[email] = { password, posts: [] };
   setUsers(users);
 
   emailInput.value = "";
   passwordInput.value = "";
 
-  alert("Registration successful. Please login.");
+  alert("Registered successfully. Please login.");
 }
 
 function login() {
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
-
   const users = getUsers();
 
-  if (!users[email]) {
-    alert("User not found");
-    return;
-  }
-
-  if (users[email].password !== password) {
-    alert("Incorrect password");
+  if (!users[email] || users[email].password !== password) {
+    alert("Invalid credentials");
     return;
   }
 
@@ -87,28 +79,37 @@ function loadUser(email) {
 function savePost() {
   const title = titleInput.value.trim();
   const content = contentInput.value.trim();
+  const editingId = editingIdInput.value;
+  const email = localStorage.getItem("currentUser");
 
   if (!title || !content) {
     alert("Title and content required");
     return;
   }
 
-  const email = localStorage.getItem("currentUser");
   const users = getUsers();
+  const posts = users[email].posts;
 
-  users[email].posts.unshift({
-    id: Date.now(),
-    title,
-    content,
-    date: new Date().toLocaleString()
-  });
+  if (editingId) {
+    // UPDATE EXISTING POST
+    const post = posts.find(p => p.id == editingId);
+    post.title = title;
+    post.content = content;
+  } else {
+    // CREATE NEW POST
+    posts.unshift({
+      id: Date.now(),
+      title,
+      content,
+      date: new Date().toLocaleString()
+    });
+  }
 
+  users[email].posts = posts;
   setUsers(users);
 
-  titleInput.value = "";
-  contentInput.value = "";
-
-  renderPosts(users[email].posts);
+  resetEditor();
+  renderPosts(posts);
 }
 
 function renderPosts(posts) {
@@ -119,11 +120,47 @@ function renderPosts(posts) {
     li.innerHTML = `
       <h3>${post.title}</h3>
       <small>${post.date}</small>
-      <p>${post.content.substring(0, 150)}...</p>
+      <p>${post.content.substring(0, 120)}...</p>
+      <button onclick="openPost(${post.id})">Open</button>
+      <button onclick="editPost(${post.id})">Edit</button>
       <button onclick="deletePost(${post.id})">Delete</button>
     `;
     postList.appendChild(li);
   });
+}
+
+/* ---------- OPEN / EDIT ---------- */
+
+function openPost(id) {
+  const email = localStorage.getItem("currentUser");
+  const users = getUsers();
+  const post = users[email].posts.find(p => p.id === id);
+
+  titleInput.value = post.title;
+  contentInput.value = post.content;
+
+  editingIdInput.value = "";
+  cancelBtn.style.display = "none";
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function editPost(id) {
+  const email = localStorage.getItem("currentUser");
+  const users = getUsers();
+  const post = users[email].posts.find(p => p.id === id);
+
+  titleInput.value = post.title;
+  contentInput.value = post.content;
+  editingIdInput.value = id;
+
+  cancelBtn.style.display = "inline-block";
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function cancelEdit() {
+  resetEditor();
 }
 
 function deletePost(id) {
@@ -134,6 +171,13 @@ function deletePost(id) {
   setUsers(users);
 
   renderPosts(users[email].posts);
+}
+
+function resetEditor() {
+  titleInput.value = "";
+  contentInput.value = "";
+  editingIdInput.value = "";
+  cancelBtn.style.display = "none";
 }
 
 /* ---------- INIT ---------- */

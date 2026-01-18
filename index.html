@@ -29,10 +29,17 @@
     <button class="logout" onclick="logout()">Logout</button>
 
     <section class="editor">
-      <input type="text" id="title" placeholder="Post title..." />
-      <textarea id="content" placeholder="Write your blog or notes here..."></textarea>
-      <button onclick="savePost()">Save Post</button>
-    </section>
+  <input type="hidden" id="editingId" />
+
+  <input type="text" id="title" placeholder="Post title..." />
+  <textarea id="content" placeholder="Write your blog or notes here..."></textarea>
+
+  <button onclick="savePost()">Save</button>
+  <button onclick="cancelEdit()" style="display:none;" id="cancelBtn">
+    Cancel Edit
+  </button>
+</section>
+
 
     <section class="posts">
       <h2>Saved Posts</h2>
