@@ -8,9 +8,15 @@ const titleInput = document.getElementById("title");
 const contentInput = document.getElementById("content");
 const postList = document.getElementById("postList");
 
-let currentUser = JSON.parse(localStorage.getItem("currentUser"));
-let users = JSON.parse(localStorage.getItem("users")) || {};
-let posts = [];
+/* ---------- STORAGE HELPERS ---------- */
+
+function getUsers() {
+  return JSON.parse(localStorage.getItem("users")) || {};
+}
+
+function setUsers(users) {
+  localStorage.setItem("users", JSON.stringify(users));
+}
 
 /* ---------- AUTH ---------- */
 
@@ -19,32 +25,48 @@ function register() {
   const password = passwordInput.value.trim();
 
   if (!email || !password) {
-    alert("All fields required");
+    alert("Email and password are required");
     return;
   }
+
+  const users = getUsers();
 
   if (users[email]) {
     alert("User already exists");
     return;
   }
 
-  users[email] = { password, posts: [] };
-  localStorage.setItem("users", JSON.stringify(users));
-  alert("Registered successfully. You can now login.");
+  users[email] = {
+    password: password,
+    posts: []
+  };
+
+  setUsers(users);
+
+  emailInput.value = "";
+  passwordInput.value = "";
+
+  alert("Registration successful. Please login.");
 }
 
 function login() {
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
 
-  if (!users[email] || users[email].password !== password) {
-    alert("Invalid credentials");
+  const users = getUsers();
+
+  if (!users[email]) {
+    alert("User not found");
     return;
   }
 
-  currentUser = email;
-  localStorage.setItem("currentUser", JSON.stringify(email));
-  loadUser();
+  if (users[email].password !== password) {
+    alert("Incorrect password");
+    return;
+  }
+
+  localStorage.setItem("currentUser", email);
+  loadUser(email);
 }
 
 function logout() {
@@ -54,12 +76,12 @@ function logout() {
 
 /* ---------- BLOG ---------- */
 
-function loadUser() {
+function loadUser(email) {
   authSection.style.display = "none";
   appSection.style.display = "block";
 
-  posts = users[currentUser].posts || [];
-  renderPosts();
+  const users = getUsers();
+  renderPosts(users[email].posts);
 }
 
 function savePost() {
@@ -71,22 +93,25 @@ function savePost() {
     return;
   }
 
-  posts.unshift({
+  const email = localStorage.getItem("currentUser");
+  const users = getUsers();
+
+  users[email].posts.unshift({
     id: Date.now(),
     title,
     content,
     date: new Date().toLocaleString()
   });
 
-  users[currentUser].posts = posts;
-  localStorage.setItem("users", JSON.stringify(users));
+  setUsers(users);
 
   titleInput.value = "";
   contentInput.value = "";
-  renderPosts();
+
+  renderPosts(users[email].posts);
 }
 
-function renderPosts() {
+function renderPosts(posts) {
   postList.innerHTML = "";
 
   posts.forEach(post => {
@@ -102,14 +127,18 @@ function renderPosts() {
 }
 
 function deletePost(id) {
-  posts = posts.filter(p => p.id !== id);
-  users[currentUser].posts = posts;
-  localStorage.setItem("users", JSON.stringify(users));
-  renderPosts();
+  const email = localStorage.getItem("currentUser");
+  const users = getUsers();
+
+  users[email].posts = users[email].posts.filter(p => p.id !== id);
+  setUsers(users);
+
+  renderPosts(users[email].posts);
 }
 
 /* ---------- INIT ---------- */
 
-if (currentUser && users[currentUser]) {
-  loadUser();
+const currentUser = localStorage.getItem("currentUser");
+if (currentUser) {
+  loadUser(currentUser);
 }
